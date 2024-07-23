@@ -2,6 +2,9 @@
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "FromEmailAddress": "gulshan.bajaj@gmail.com",
+    "ToEmailAddress": "gulshan.bajaj@gmail.com",
+    "SendGridApiKey": "<Your Api Key>"
   }
 }
