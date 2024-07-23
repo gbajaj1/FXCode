@@ -15,6 +15,7 @@ using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Microsoft.Extensions.FileProviders;
 using System.Linq;
+using SendGrid.Helpers.Mail;
 
 namespace FileFunction.Functions
 {
@@ -24,7 +25,9 @@ namespace FileFunction.Functions
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             [Blob("orders", Connection = "AzureWebJobsStorage")] BlobContainerClient container,
+           /* [SendGrid(ApiKey = "SendGridApiKey")] SendGridMessage message, -- SendGrid Functionality */
             ExecutionContext executionContext,
+
             ILogger log)
         {
             try
@@ -237,7 +240,7 @@ namespace FileFunction.Functions
                 }
 
                 log.LogInformation($"Sending email for the files {String.Join("\n", generatedFiles)}");
-                sendEmail(generatedFiles);
+                sendEmail(generatedFiles, /* message, */ log);
                 return new OkObjectResult(inputBlob.Name);
             }
             catch (Exception ex)
@@ -247,10 +250,21 @@ namespace FileFunction.Functions
             return new OkObjectResult("");
         }
 
-        public static void sendEmail(List<string> fileNames)
+        public static void sendEmail(List<string> fileNames, /*SendGridMessage message,*/ ILogger log)
         {
             string files = String.Join("\n", fileNames);
-            //log.LogInformation($"sending email for the generated files: {files}");
+            log.LogInformation($"sending email for the generated files: {files}");
+            /* Commenting out as SendGrid will work only with custom domain --
+             * 
+             * 
+             * message = new SendGridMessage();
+             * message.From = new EmailAddress(Environment.GetEnvironmentVariable("FromEmailAddress"));
+             * message.AddTo(Environment.GetEnvironmentVariable("ToEmailAddress"));
+             * message.Subject = "Files Spiltted";
+             * message.HtmlContent = files;
+             */
+
+
 
         }
 
